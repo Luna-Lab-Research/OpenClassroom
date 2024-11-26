@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_26_160244) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_26_162842) do
+  create_table "courses", force: :cascade do |t|
+    t.string "name"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.integer "subject_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subject_id"], name: "index_courses_on_subject_id"
+  end
+
+  create_table "enrollments", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "course_id", null: false
+    t.integer "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_enrollments_on_course_id"
+    t.index ["user_id", "course_id"], name: "index_enrollments_on_user_id_and_course_id", unique: true
+    t.index ["user_id"], name: "index_enrollments_on_user_id"
+  end
+
+  create_table "subjects", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "display_name", default: "", null: false
     t.string "email", default: "", null: false
@@ -23,4 +51,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_26_160244) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "courses", "subjects"
+  add_foreign_key "enrollments", "courses"
+  add_foreign_key "enrollments", "users"
 end
