@@ -27,9 +27,11 @@
         <%= sidebar_menu_entry('Dashboard', '/', 'home') %>
     </nav>
     <main>
+      <div class="l-content">
         <p class="notice"><%= notice %></p>
         <p class="alert"><%= alert %></p>
         <%= yield %>
+      </div>
     </main>
   </body>
 </html>
