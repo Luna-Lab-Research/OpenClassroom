@@ -12,12 +12,16 @@
 
 ActiveRecord::Schema[8.0].define(version: 2024_11_26_162842) do
   create_table "courses", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.datetime "start_date"
     t.datetime "end_date"
     t.integer "subject_id"
+    t.integer "creator_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_courses_on_creator_id"
+    t.index ["name"], name: "index_courses_on_name"
+    t.index ["start_date", "end_date"], name: "index_courses_on_start_date_and_end_date"
     t.index ["subject_id"], name: "index_courses_on_subject_id"
   end
 
@@ -41,6 +45,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_26_162842) do
 
   create_table "users", force: :cascade do |t|
     t.string "display_name", default: "", null: false
+    t.integer "system_role", default: 0, null: false
+    t.boolean "can_create_classes", default: false, null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -50,9 +56,11 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_26_162842) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["system_role"], name: "index_users_on_system_role"
   end
 
   add_foreign_key "courses", "subjects"
+  add_foreign_key "courses", "users", column: "creator_id"
   add_foreign_key "enrollments", "courses"
   add_foreign_key "enrollments", "users"
 end
